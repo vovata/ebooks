@@ -57,6 +57,19 @@ function(add_compiler_release_flag_if_supported flag name)
 endfunction()
 
 
+include_directories(
+    ./
+    ${Boost_INCLUDE_DIRS}
+    ${XML2_INCLUDE_DIR}
+)
+
 add_executable(hello
     main.cpp
 )
+
+#this target helps the qt creator to find and parse all other files
+file(GLOB_RECURSE XSDS "*.xsd")
+add_custom_target(xsd_target SOURCES ${XSDS})
+
+file(GLOB_RECURSE INCS "*.h")
+add_custom_target(inc_target SOURCES ${INCS})
