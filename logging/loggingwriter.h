@@ -21,21 +21,45 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <iostream>
+#pragma once
 
-#include "logging/loggingwriter.h"
-#include "logging/loggerdefine.h"
+#include <string>
 
-#include <boost/log/sources/severity_logger.hpp>
-#include <boost/log/sources/record_ostream.hpp>
+#include <boost/unordered_map.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/log/sinks.hpp>
 
-int main()
+namespace common
 {
-    common::logging::create_writer("console");
 
-    boost::log::sources::severity_logger<common::loging_severity> logger(boost::log::keywords::severity = common::loging_severity::info);
+class logging
+{
+public:
+    static void create_writer(const std::string& name);
 
-    BOOST_LOG(logger) << "Hello World!";
-    return 0;
+    logging& operator=(const logging&) = delete;
+    logging(const logging&) = delete;
+
+private:
+    static logging& get_logging_core();
+    logging();
+
+    class writer
+    {
+    public:
+        writer(const std::string& name);
+        void init();
+        void enable();
+        void disable();
+
+    private:
+        std::string _name;
+
+        boost::shared_ptr<boost::log::sinks::synchronous_sink<boost::log::sinks::text_ostream_backend> > _sink;
+    };
+
+    typedef boost::unordered_map<std::string, boost::shared_ptr<writer> > writers_map_type;
+    static writers_map_type writers;
+};
+
 }
-

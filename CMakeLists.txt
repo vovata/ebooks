@@ -16,7 +16,7 @@ set(BOOST_ROOT "/usr")
 set(Boost_NO_BOOST_CMAKE OFF)
 set(Boost_NO_SYSTEM_PATHS FALSE)
 set(Boost_INCLUDE_DIR "-NOTFOUND")
-find_package(Boost COMPONENTS REQUIRED program_options thread regex system filesystem serialization date_time iostreams log)
+find_package(Boost COMPONENTS REQUIRED program_options thread regex system filesystem serialization date_time iostreams log log_setup)
 
 find_library(XML2_LIBRARY NAMES xml2)
 find_path(XML2_INCLUDE_DIR NAMES libxml/xpath.h
@@ -56,6 +56,16 @@ function(add_compiler_release_flag_if_supported flag name)
   endif ()
 endfunction()
 
+# additional optimizing release flags
+# for gcc version >=4.2 -march=native and -mtune=native should be set
+# for earlier gcc versions march and mtune could be set to a best fitting processor type
+# available types may be looked up in the gcc info pages
+add_compiler_release_flag_if_supported(-march=native march_native)
+add_compiler_release_flag_if_supported(-mtune=native mtune_native)
+
+add_compiler_flag_if_supported(-std=c++11 cpp11)
+
+add_compiler_flag_if_supported(-DBOOST_LOG_DYN_LINK BOOST_LOG_DYN_LINK)
 
 include_directories(
     ./
@@ -65,6 +75,19 @@ include_directories(
 
 add_executable(hello
     main.cpp
+)
+
+target_link_libraries(hello
+    logging
+    ${Boost_LIBRARIES}
+)
+
+add_library(logging SHARED
+    logging/loggingwriter.cpp
+)
+
+target_link_libraries(logging
+    ${Boost_LIBRARIES}
 )
 
 #this target helps the qt creator to find and parse all other files

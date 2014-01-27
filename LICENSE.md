@@ -1,6 +1,6 @@
 This is the MIT License: http://opensource.org/licenses/MIT
 
-Copyright (c) 2013 vovata@gmail.com
+Copyright (c) 2013-2014 vovata@gmail.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

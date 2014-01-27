@@ -21,21 +21,31 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <iostream>
+#pragma once
 
-#include "logging/loggingwriter.h"
-#include "logging/loggerdefine.h"
-
-#include <boost/log/sources/severity_logger.hpp>
-#include <boost/log/sources/record_ostream.hpp>
-
-int main()
+enum class ansi_color_style
 {
-    common::logging::create_writer("console");
+    normal = 33
+};
 
-    boost::log::sources::severity_logger<common::loging_severity> logger(boost::log::keywords::severity = common::loging_severity::info);
+enum class ansi_color_code
+{
+    black   = 30,
+    red     = 31,
+    green   = 32,
+    yellow  = 33,
+    blue    = 34,
+    magenta = 35,
+    cyan    = 36,
+    white   = 37
+};
 
-    BOOST_LOG(logger) << "Hello World!";
-    return 0;
-}
-
+enum class ansi_color_effect
+{
+    normal      = 0,
+    bold        = 1,
+    faint       = 2,
+    italic      = 3,
+    underline   = 4,
+    blink       = 5
+};

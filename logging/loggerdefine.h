@@ -21,21 +21,19 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <iostream>
+#pragma once
 
-#include "logging/loggingwriter.h"
-#include "logging/loggerdefine.h"
-
-#include <boost/log/sources/severity_logger.hpp>
-#include <boost/log/sources/record_ostream.hpp>
-
-int main()
+namespace common
 {
-    common::logging::create_writer("console");
 
-    boost::log::sources::severity_logger<common::loging_severity> logger(boost::log::keywords::severity = common::loging_severity::info);
+enum class loging_severity : short
+{
+    fatal = 0,
+    error = 1,
+    warning = 2,
+    info = 3,
+    debug = 4,
+    trace = 5
+};
 
-    BOOST_LOG(logger) << "Hello World!";
-    return 0;
 }
-

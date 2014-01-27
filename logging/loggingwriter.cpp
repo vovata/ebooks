@@ -21,21 +21,50 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <iostream>
+#include "loggingwriter.h"
 
-#include "logging/loggingwriter.h"
-#include "logging/loggerdefine.h"
+#include <boost/log/utility/setup/console.hpp>
 
-#include <boost/log/sources/severity_logger.hpp>
-#include <boost/log/sources/record_ostream.hpp>
-
-int main()
+namespace common
 {
-    common::logging::create_writer("console");
 
-    boost::log::sources::severity_logger<common::loging_severity> logger(boost::log::keywords::severity = common::loging_severity::info);
+logging::writers_map_type logging::writers;
 
-    BOOST_LOG(logger) << "Hello World!";
-    return 0;
+void logging::create_writer(const std::string& name)
+{
+    boost::shared_ptr<writer> writer_ptr = boost::make_shared<writer>(name);
+    writer_ptr->init();
+    get_logging_core().writers.emplace(name, writer_ptr);
 }
 
+logging& logging::get_logging_core()
+{
+    static logging log_object;
+    return log_object;
+}
+
+logging::logging()
+{ }
+
+logging::writer::writer(const std::string &name) :
+    _name(name)
+{ }
+
+void logging::writer::init()
+{
+    _sink = boost::log::add_console_log();
+    _sink->locked_backend()->auto_flush(true);
+}
+
+void logging::writer::enable()
+{
+    boost::log::core::get()->add_sink(_sink);
+}
+
+void logging::writer::disable()
+{
+    boost::log::core::get()->remove_sink(_sink);
+    _sink->flush();
+}
+
+}
