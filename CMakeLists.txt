@@ -73,13 +73,12 @@ include_directories(
     ${XML2_INCLUDE_DIR}
 )
 
-add_executable(hello
-    main.cpp
+add_executable(showhello
+    tests/showhello.cpp
 )
 
-target_link_libraries(hello
+target_link_libraries(showhello
     logging
-    ${Boost_LIBRARIES}
 )
 
 add_library(logging SHARED
@@ -89,6 +88,19 @@ add_library(logging SHARED
 
 target_link_libraries(logging
     ${Boost_LIBRARIES}
+)
+
+add_executable(showoptions
+    tests/showoptions.cpp
+)
+
+add_library(options
+    options/options.cpp
+)
+
+target_link_libraries(showoptions
+    options
+    logging
 )
 
 #this target helps the qt creator to find and parse all other files
