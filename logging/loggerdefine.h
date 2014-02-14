@@ -23,10 +23,12 @@
 
 #pragma once
 
+#include <type_traits>
+
 namespace common
 {
 
-enum class loging_severity : short
+enum class logging_severity : short
 {
     fatal = 0,
     error = 1,
@@ -35,5 +37,17 @@ enum class loging_severity : short
     debug = 4,
     trace = 5
 };
+
+typedef std::underlying_type<logging_severity>::type logging_severity_type;
+
+logging_severity_type get_max_logging_severity_value();
+
+enum class switch_output : bool
+{
+    on = true,
+    off = false
+};
+
+typedef std::underlying_type<switch_output>::type switch_output_type;
 
 }

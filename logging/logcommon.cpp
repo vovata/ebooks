@@ -21,56 +21,28 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#pragma once
+#include "loggerdefine.h"
 
-#include <type_traits>
+#include <algorithm>
 
-enum class ansi_color_style : char
+namespace common
 {
-    normal = 0x1B
-};
 
-typedef std::underlying_type<ansi_color_style>::type ansi_color_style_type;
-
-enum class ansi_color_code : short
+logging_severity_type get_max_logging_severity_value()
 {
-    black   = 30,
-    red     = 31,
-    green   = 32,
-    yellow  = 33,
-    blue    = 34,
-    magenta = 35,
-    cyan    = 36,
-    white   = 37
-};
+    static logging_severity_type max_severity_value = 0;
 
-typedef std::underlying_type<ansi_color_code>::type ansi_color_code_type;
+    if (max_severity_value == 0)
+    {
+        max_severity_value = std::max(max_severity_value, static_cast<logging_severity_type>(logging_severity::trace));
+        max_severity_value = std::max(max_severity_value, static_cast<logging_severity_type>(logging_severity::debug));
+        max_severity_value = std::max(max_severity_value, static_cast<logging_severity_type>(logging_severity::info));
+        max_severity_value = std::max(max_severity_value, static_cast<logging_severity_type>(logging_severity::warning));
+        max_severity_value = std::max(max_severity_value, static_cast<logging_severity_type>(logging_severity::error));
+        max_severity_value = std::max(max_severity_value, static_cast<logging_severity_type>(logging_severity::fatal));
+    }
 
-enum class ansi_color_effect : short
-{
-    normal      = 0,
-    bold        = 1,
-    faint       = 2,
-    italic      = 3,
-    underline   = 4,
-    blink       = 5
-};
+    return max_severity_value;
+}
 
-typedef std::underlying_type<ansi_color_effect>::type ansi_color_effect_type;
-
-struct ansi_color
-{
-    ansi_color_code code;
-    ansi_color_effect effect;
-
-    ansi_color() :
-        code(ansi_color_code::white),
-        effect(ansi_color_effect::normal)
-    { }
-
-    ansi_color(ansi_color_code code_,
-               ansi_color_effect effect_) :
-        code(code_),
-        effect(effect_)
-    { }
-};
+}

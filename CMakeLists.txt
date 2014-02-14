@@ -83,6 +83,7 @@ target_link_libraries(hello
 )
 
 add_library(logging SHARED
+    logging/logcommon.cpp
     logging/loggingwriter.cpp
 )
 

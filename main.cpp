@@ -31,11 +31,22 @@
 
 int main()
 {
-    common::logging::create_writer("console");
+    common::logging::create_console_writer("console");
+    common::logging::set_default_severity_colors("console");
+    common::logging::create_file_writer("file_log", "file.log");
+    common::logging::set_default_severity_labels("file_log");
 
-    boost::log::sources::severity_logger<common::loging_severity> logger(boost::log::keywords::severity = common::loging_severity::info);
+    boost::log::sources::severity_logger<common::logging_severity> logger(boost::log::keywords::severity = common::logging_severity::info);
 
     BOOST_LOG(logger) << "Hello World!";
+
+    BOOST_LOG_SEV(logger, common::logging_severity::trace) << "trace messgae";
+    BOOST_LOG_SEV(logger, common::logging_severity::debug) << "debug text";
+
+    BOOST_LOG_SEV(logger, common::logging_severity::warning) << "attention";
+    BOOST_LOG_SEV(logger, common::logging_severity::error) << "ERROR";
+    BOOST_LOG_SEV(logger, common::logging_severity::fatal) << "FATAL";
+
     return 0;
 }
 
