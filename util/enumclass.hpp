@@ -21,4 +21,45 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "options.hpp"
+#pragma once
+
+#include <type_traits>
+
+namespace ebooks
+{
+namespace util
+{
+
+/**
+ * @brief Helper to access the value of the underlying type of an enum
+ */
+template <typename T>
+typename std::enable_if<std::is_enum<T>::value, typename std::underlying_type<T>::type>::type
+integral(T value)
+{
+    return static_cast<typename std::underlying_type<T>::type>(value);
+}
+
+template <typename T>
+typename std::enable_if<std::is_enum<T>::value, T>::type
+arrange(typename std::underlying_type<T>::type value)
+{
+    return static_cast<T>(value);
+}
+
+template <typename T>
+static inline typename std::enable_if<std::is_enum<T>::value, T>::type
+operator |(T a, T b)
+{
+    return arrange(integral(a) | integral(b));
+}
+
+template <typename T>
+static inline typename std::enable_if<std::is_enum<T>::value, T>::type
+operator &(T a, T b)
+{
+    return arrange<T>(integral(a) & integral(b));
+}
+
+}
+}

@@ -25,52 +25,32 @@
 
 #include <type_traits>
 
-enum class ansi_color_style : char
+namespace ebooks
 {
-    normal = 0x1B
+namespace logging
+{
+
+enum class severity : short
+{
+    fatal = 0,
+    error = 1,
+    warning = 2,
+    info = 3,
+    debug = 4,
+    trace = 5
 };
 
-typedef std::underlying_type<ansi_color_style>::type ansi_color_style_type;
+typedef std::underlying_type<severity>::type severity_type;
 
-enum class ansi_color_code : short
+severity_type get_max_logging_severity_value();
+
+enum class switch_output : bool
 {
-    black   = 30,
-    red     = 31,
-    green   = 32,
-    yellow  = 33,
-    blue    = 34,
-    magenta = 35,
-    cyan    = 36,
-    white   = 37
+    on = true,
+    off = false
 };
 
-typedef std::underlying_type<ansi_color_code>::type ansi_color_code_type;
+typedef std::underlying_type<switch_output>::type switch_output_type;
 
-enum class ansi_color_effect : short
-{
-    normal      = 0,
-    bold        = 1,
-    faint       = 2,
-    italic      = 3,
-    underline   = 4,
-    blink       = 5
-};
-
-typedef std::underlying_type<ansi_color_effect>::type ansi_color_effect_type;
-
-struct ansi_color
-{
-    ansi_color_code code;
-    ansi_color_effect effect;
-
-    ansi_color() :
-        code(ansi_color_code::white),
-        effect(ansi_color_effect::normal)
-    { }
-
-    ansi_color(ansi_color_code code_,
-               ansi_color_effect effect_) :
-        code(code_),
-        effect(effect_)
-    { }
-};
+}
+}

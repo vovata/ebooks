@@ -21,7 +21,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "options/options.h"
+#include "options/options.hpp"
 
 int main()
 {

@@ -107,5 +107,5 @@ target_link_libraries(showoptions
 file(GLOB_RECURSE XSDS "*.xsd")
 add_custom_target(xsd_target SOURCES ${XSDS})
 
-file(GLOB_RECURSE INCS "*.h")
+file(GLOB_RECURSE INCS "*.h" "*.hpp")
 add_custom_target(inc_target SOURCES ${INCS})

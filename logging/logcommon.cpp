@@ -21,28 +21,31 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "loggerdefine.h"
+#include "loggerdefine.hpp"
 
 #include <algorithm>
 
-namespace common
+namespace ebooks
+{
+namespace logging
 {
 
-logging_severity_type get_max_logging_severity_value()
+severity_type get_max_logging_severity_value()
 {
-    static logging_severity_type max_severity_value = 0;
+    static severity_type max_severity_value = 0;
 
     if (max_severity_value == 0)
     {
-        max_severity_value = std::max(max_severity_value, static_cast<logging_severity_type>(logging_severity::trace));
-        max_severity_value = std::max(max_severity_value, static_cast<logging_severity_type>(logging_severity::debug));
-        max_severity_value = std::max(max_severity_value, static_cast<logging_severity_type>(logging_severity::info));
-        max_severity_value = std::max(max_severity_value, static_cast<logging_severity_type>(logging_severity::warning));
-        max_severity_value = std::max(max_severity_value, static_cast<logging_severity_type>(logging_severity::error));
-        max_severity_value = std::max(max_severity_value, static_cast<logging_severity_type>(logging_severity::fatal));
+        max_severity_value = std::max(max_severity_value, static_cast<severity_type>(severity::trace));
+        max_severity_value = std::max(max_severity_value, static_cast<severity_type>(severity::debug));
+        max_severity_value = std::max(max_severity_value, static_cast<severity_type>(severity::info));
+        max_severity_value = std::max(max_severity_value, static_cast<severity_type>(severity::warning));
+        max_severity_value = std::max(max_severity_value, static_cast<severity_type>(severity::error));
+        max_severity_value = std::max(max_severity_value, static_cast<severity_type>(severity::fatal));
     }
 
     return max_severity_value;
 }
 
+}
 }

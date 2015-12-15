@@ -23,8 +23,8 @@
 
 #pragma once
 
-#include "loggerdefine.h"
-#include "ansicolors.h"
+#include "loggerdefine.hpp"
+#include "ansicolors.hpp"
 
 #include <string>
 
@@ -32,14 +32,16 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/log/sinks.hpp>
 
-namespace common
+namespace ebooks
+{
+namespace logging
 {
 
-class logging
+class facility
 {
 public:
-    typedef boost::unordered_map<logging_severity, const char*> severity_labels_map;
-    typedef boost::unordered_map<logging_severity, ansi_color> severity_colors_map;
+    typedef boost::unordered_map<severity, const char*> severity_labels_map;
+    typedef boost::unordered_map<severity, color::ansi_color> severity_colors_map;
 
     static void create_console_writer(const std::string& name);
     static void create_file_writer(const std::string& name, const std::string& file_path);
@@ -50,8 +52,8 @@ public:
     static void set_default_severity_labels(const std::string& name);
     static void set_default_severity_colors(const std::string& name);
 
-    logging& operator=(const logging&) = delete;
-    logging(const logging&) = delete;
+    facility& operator=(const facility&) = delete;
+    facility(const facility&) = delete;
 
 private:
     class writer
@@ -67,8 +69,8 @@ private:
 
         void set_severity_labels(const severity_labels_map& severity_labels);
         void switch_severity_labels(switch_output switch_value);
-        const std::string& get_severity_label(logging_severity severity) const;
-        const std::string& get_severity_color(logging_severity severity) const;
+        const std::string& get_severity_label(severity severity) const;
+        const std::string& get_severity_color(severity severity) const;
 
         void set_severity_colors(const severity_colors_map& severity_colors);
         void switch_severity_colors(switch_output switch_value);
@@ -148,13 +150,14 @@ private:
         boost::shared_ptr<boost::log::sinks::synchronous_sink<boost::log::sinks::text_file_backend> > _sink;
     };
 
-    static logging& get_logging_core();
+    static facility& get_logging_core();
 
-    logging();
+    facility();
     writer& get_writer(const std::string& name);
 
     typedef boost::unordered_map<std::string, boost::shared_ptr<writer> > writers_map_type;
     writers_map_type writers;
 };
 
+}
 }

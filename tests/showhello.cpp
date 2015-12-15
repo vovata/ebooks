@@ -23,29 +23,29 @@
 
 #include <iostream>
 
-#include "logging/loggingwriter.h"
-#include "logging/loggerdefine.h"
+#include "logging/loggingwriter.hpp"
+#include "logging/loggerdefine.hpp"
 
 #include <boost/log/sources/severity_logger.hpp>
 #include <boost/log/sources/record_ostream.hpp>
 
 int main()
 {
-    common::logging::create_console_writer("console");
-    common::logging::set_default_severity_colors("console");
-    common::logging::create_file_writer("file_log", "file.log");
-    common::logging::set_default_severity_labels("file_log");
+    ebooks::logging::facility::create_console_writer("console");
+    ebooks::logging::facility::set_default_severity_colors("console");
+    ebooks::logging::facility::create_file_writer("file_log", "file.log");
+    ebooks::logging::facility::set_default_severity_labels("file_log");
 
-    boost::log::sources::severity_logger<common::logging_severity> logger(boost::log::keywords::severity = common::logging_severity::info);
+    boost::log::sources::severity_logger<ebooks::logging::severity> logger(boost::log::keywords::severity = ebooks::logging::severity::info);
 
     BOOST_LOG(logger) << "Hello World!";
 
-    BOOST_LOG_SEV(logger, common::logging_severity::trace) << "trace messgae";
-    BOOST_LOG_SEV(logger, common::logging_severity::debug) << "debug text";
-
-    BOOST_LOG_SEV(logger, common::logging_severity::warning) << "attention";
-    BOOST_LOG_SEV(logger, common::logging_severity::error) << "ERROR";
-    BOOST_LOG_SEV(logger, common::logging_severity::fatal) << "FATAL";
+    BOOST_LOG_SEV(logger, ebooks::logging::severity::trace) << "trace messgae";
+    BOOST_LOG_SEV(logger, ebooks::logging::severity::debug) << "debug text";
+    BOOST_LOG_SEV(logger, ebooks::logging::severity::info) << "just info";
+    BOOST_LOG_SEV(logger, ebooks::logging::severity::warning) << "attention";
+    BOOST_LOG_SEV(logger, ebooks::logging::severity::error) << "ERROR";
+    BOOST_LOG_SEV(logger, ebooks::logging::severity::fatal) << "FATAL";
 
     return 0;
 }
