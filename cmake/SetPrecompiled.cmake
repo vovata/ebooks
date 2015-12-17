@@ -54,7 +54,9 @@ function(add_precompiled_header target precompiled_header)
     file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/precompiled.gch/${target})
 
     get_filename_component(precompiled_file ${precompiled_header} NAME)
-    message(STATUS "PRECOMPILED -- ${CMAKE_CXX_COMPILER} ${flags} ${precompiled_header} -o ${CMAKE_BINARY_DIR}/precompiled.gch/${target}/${precompiled_file}.gch")
+    if(${debug_cmake})
+        message(STATUS "PRECOMPILED -- ${CMAKE_CXX_COMPILER} ${flags} ${precompiled_header} -o ${CMAKE_BINARY_DIR}/precompiled.gch/${target}/${precompiled_file}.gch")
+    endif()
 
     add_custom_target(precompiled_${target} ALL
         DEPENDS precompiled.gch/${target}/${precompiled_file}.gch

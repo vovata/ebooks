@@ -32,12 +32,12 @@ namespace logging
 
 enum class severity : short
 {
-    fatal = 0,
-    error = 1,
-    warning = 2,
-    info = 3,
-    debug = 4,
-    trace = 5
+    trace = 0,
+    debug = 1,
+    info = 2,
+    warning = 3,
+    error = 4,
+    fatal = 5,
 };
 
 typedef common::underlying_type<severity>::type severity_type;
@@ -45,7 +45,7 @@ typedef common::underlying_type<severity>::type severity_type;
 enum class switch_output : bool
 {
     on = true,
-    off = false
+    off = false,
 };
 
 }

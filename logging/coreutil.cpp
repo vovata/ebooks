@@ -108,21 +108,21 @@ void initialize(const std::string& config_path_)
             boost::log::init_from_stream(logging_config_file);
 
         // init console sink
-        typedef boost::log::sinks::synchronous_sink<boost::log::sinks::text_ostream_backend> console_backend_type;
-        typedef boost::shared_ptr<console_backend_type> console_backend_ptr;
-        console_backend_ptr sink = boost::log::add_console_log(std::clog,
-                                                               boost::log::keywords::format = "%Message%",
-                                                               boost::log::keywords::auto_flush = true);
-        if (sink)
-        {
-            typedef boost::log::expressions::channel_severity_filter_actor<std::string, boost::log::trivial::severity_level> channel_severity_filter_type;
-            channel_severity_filter_type channel_severity_filter = boost::log::expressions::channel_severity_filter(channel_keyword, severity_keyword);
-            channel_severity_filter["APP"] = boost::log::trivial::info;
-            channel_severity_filter["COM"] = boost::log::trivial::warning;
-            channel_severity_filter["SYS"] = boost::log::trivial::warning;
+//        typedef boost::log::sinks::synchronous_sink<boost::log::sinks::text_ostream_backend> console_backend_type;
+//        typedef boost::shared_ptr<console_backend_type> console_backend_ptr;
+//        console_backend_ptr sink = boost::log::add_console_log(std::clog,
+//                                                               boost::log::keywords::format = "%Message%",
+//                                                               boost::log::keywords::auto_flush = true);
+//        if (sink)
+//        {
+//            typedef boost::log::expressions::channel_severity_filter_actor<std::string, boost::log::trivial::severity_level> channel_severity_filter_type;
+//            channel_severity_filter_type channel_severity_filter = boost::log::expressions::channel_severity_filter(channel_keyword, severity_keyword);
+//            channel_severity_filter["APP"] = boost::log::trivial::info;
+//            channel_severity_filter["COM"] = boost::log::trivial::warning;
+//            channel_severity_filter["SYS"] = boost::log::trivial::warning;
 
-            sink->set_filter(channel_severity_filter);
-        }
+//            sink->set_filter(channel_severity_filter);
+//        }
     }
     else
     {

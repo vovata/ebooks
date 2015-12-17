@@ -30,3 +30,13 @@ file(GLOB_RECURSE target_XSDS "xsd/*.xsd")
 list(APPEND XSDS ${target_XSDS})
 
 add_custom_target(source_headers SOURCES ${SOURCE_HEADERS} ${SAMPLES} ${NOTES} ${XSDS})
+
+foreach(sample_file ${SAMPLES})
+    get_filename_component(sample_filename ${sample_file} NAME)
+    string(REPLACE ".sample" "" sample_filename_wo_sample ${sample_filename})
+    set(target_file ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${sample_filename_wo_sample})
+
+    add_custom_target(${sample_filename_wo_sample} ALL
+        COMMAND cp -n ${sample_file} ${target_file}
+    )
+endforeach(sample_file)

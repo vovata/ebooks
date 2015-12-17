@@ -226,7 +226,7 @@ void facility::writer::function_formatter(boost::log::record_view const& rec_,
     if (_switch_severity_labels == switch_output::on ||
         _switch_severity_colors == switch_output::on)
     {
-        severity severity_level = boost::log::extract<severity>("Severity", rec_).get();
+        severity severity_level = translate(boost::log::extract<boost::log::trivial::severity_level>("Severity", rec_).get());
 
         if (_switch_severity_colors == switch_output::on)
             strm_ << get_severity_color(severity_level);

@@ -21,7 +21,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#if defined(_MSC_VER) || defined (_NEEDS_PRECOMPILE)
+#if defined(_MSC_VER) || defined(_NEEDS_PRECOMPILE)
 
 #include <string>
 
