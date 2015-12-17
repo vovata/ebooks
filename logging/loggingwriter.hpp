@@ -23,14 +23,15 @@
 
 #pragma once
 
-#include "loggerdefine.hpp"
-#include "ansicolors.hpp"
-
 #include <string>
 
 #include <boost/unordered_map.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/log/sinks.hpp>
+
+#include "common/smartptrdef.hpp"
+#include "loggerdefine.hpp"
+#include "ansicolors.hpp"
 
 namespace ebooks
 {
@@ -43,14 +44,14 @@ public:
     typedef boost::unordered_map<severity, const char*> severity_labels_map;
     typedef boost::unordered_map<severity, color::ansi_color> severity_colors_map;
 
-    static void create_console_writer(const std::string& name);
-    static void create_file_writer(const std::string& name, const std::string& file_path);
-    static void disable_writer(const std::string& name);
-    static void enable_writer(const std::string& name);
-    static bool writer_is_active(const std::string& name);
+    static void create_console_writer(const std::string& name_);
+    static void create_file_writer(const std::string& name_, const std::string& file_path_);
+    static void disable_writer(const std::string& name_);
+    static void enable_writer(const std::string& name_);
+    static bool writer_is_active(const std::string& name_);
 
-    static void set_default_severity_labels(const std::string& name);
-    static void set_default_severity_colors(const std::string& name);
+    static void set_default_severity_labels(const std::string& name_);
+    static void set_default_severity_colors(const std::string& name_);
 
     facility& operator=(const facility&) = delete;
     facility(const facility&) = delete;
@@ -67,21 +68,21 @@ private:
         virtual void set_formatter() = 0;
         virtual bool is_active() const;
 
-        void set_severity_labels(const severity_labels_map& severity_labels);
-        void switch_severity_labels(switch_output switch_value);
-        const std::string& get_severity_label(severity severity) const;
-        const std::string& get_severity_color(severity severity) const;
+        void set_severity_labels(const severity_labels_map& severity_labels_);
+        void switch_severity_labels(switch_output switch_value_);
+        const std::string& get_severity_label(severity severity_) const;
+        const std::string& get_severity_color(severity severity_) const;
 
-        void set_severity_colors(const severity_colors_map& severity_colors);
-        void switch_severity_colors(switch_output switch_value);
+        void set_severity_colors(const severity_colors_map& severity_colors_);
+        void switch_severity_colors(switch_output switch_value_);
 
-        void switch_channel_label(switch_output switch_value);
-        void switch_tag_label(switch_output switch_value);
+        void switch_channel_label(switch_output switch_value_);
+        void switch_tag_label(switch_output switch_value_);
 
-        virtual void function_formatter(boost::log::record_view const& rec, boost::log::formatting_ostream& strm);
+        virtual void function_formatter(boost::log::record_view const& rec_, boost::log::formatting_ostream& strm_);
 
     protected:
-        writer(const std::string& name);
+        writer(const std::string& name_);
 
         bool _is_active;
 
@@ -153,9 +154,9 @@ private:
     static facility& get_logging_core();
 
     facility();
-    writer& get_writer(const std::string& name);
+    writer& get_writer(const std::string& name_);
 
-    typedef boost::unordered_map<std::string, boost::shared_ptr<writer> > writers_map_type;
+    typedef boost::unordered_map<std::string, common::shared_ptr<writer> > writers_map_type;
     writers_map_type writers;
 };
 

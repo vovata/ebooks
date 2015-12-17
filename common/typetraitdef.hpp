@@ -21,31 +21,33 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "loggerdefine.hpp"
+#pragma once
 
-#include <algorithm>
+#if defined(STD_NAMESPACES) || !defined(BOOST_NAMESPACES)
+#include <type_traits>
+#elif defined(BOOST_NAMESPACES)
+#include <boost/type_traits.hpp>
+#include <boost/core/underlying_type.hpp>
+#endif
 
 namespace ebooks
 {
-namespace logging
+namespace common
 {
 
-severity_type get_max_logging_severity_value()
-{
-    static severity_type max_severity_value = 0;
+#if defined(STD_NAMESPACES) || !defined(BOOST_NAMESPACES)
+// from std namespace
+using std::underlying_type;
+using std::enable_if;
+using std::is_enum;
 
-    if (max_severity_value == 0)
-    {
-        max_severity_value = std::max(max_severity_value, static_cast<severity_type>(severity::trace));
-        max_severity_value = std::max(max_severity_value, static_cast<severity_type>(severity::debug));
-        max_severity_value = std::max(max_severity_value, static_cast<severity_type>(severity::info));
-        max_severity_value = std::max(max_severity_value, static_cast<severity_type>(severity::warning));
-        max_severity_value = std::max(max_severity_value, static_cast<severity_type>(severity::error));
-        max_severity_value = std::max(max_severity_value, static_cast<severity_type>(severity::fatal));
-    }
+#elif defined(BOOST_NAMESPACES)
+using boost::underlying_type;
+template< bool B, class T = void >
+using enable_if = typename boost::enable_if_c<B,T>;
+using boost::is_enum;
 
-    return max_severity_value;
-}
+#endif
 
 }
 }

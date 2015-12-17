@@ -23,7 +23,7 @@
 
 #pragma once
 
-#include <type_traits>
+#include "common/typetraitdef.hpp"
 
 namespace ebooks
 {
@@ -34,28 +34,28 @@ namespace util
  * @brief Helper to access the value of the underlying type of an enum
  */
 template <typename T>
-typename std::enable_if<std::is_enum<T>::value, typename std::underlying_type<T>::type>::type
+typename common::enable_if<common::is_enum<T>::value, typename common::underlying_type<T>::type>::type
 integral(T value)
 {
-    return static_cast<typename std::underlying_type<T>::type>(value);
+    return static_cast<typename common::underlying_type<T>::type>(value);
 }
 
 template <typename T>
-typename std::enable_if<std::is_enum<T>::value, T>::type
-arrange(typename std::underlying_type<T>::type value)
+typename common::enable_if<common::is_enum<T>::value, T>::type
+arrange(typename common::underlying_type<T>::type value)
 {
     return static_cast<T>(value);
 }
 
 template <typename T>
-static inline typename std::enable_if<std::is_enum<T>::value, T>::type
+static inline typename common::enable_if<common::is_enum<T>::value, T>::type
 operator |(T a, T b)
 {
     return arrange(integral(a) | integral(b));
 }
 
 template <typename T>
-static inline typename std::enable_if<std::is_enum<T>::value, T>::type
+static inline typename common::enable_if<common::is_enum<T>::value, T>::type
 operator &(T a, T b)
 {
     return arrange<T>(integral(a) & integral(b));

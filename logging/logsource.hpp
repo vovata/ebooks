@@ -23,29 +23,39 @@
 
 #pragma once
 
-#include "common/typetraitdef.hpp"
+#include <boost/log/trivial.hpp>
+
+#include "severitychannel.hpp"
+#include "logsourcefwd.hpp"
 
 namespace ebooks
 {
 namespace logging
 {
 
-enum class severity : short
-{
-    fatal = 0,
-    error = 1,
-    warning = 2,
-    info = 3,
-    debug = 4,
-    trace = 5
-};
+typedef severity_channel_source<boost::log::trivial::severity_level, std::string> severity_channel_source_type;
 
-typedef common::underlying_type<severity>::type severity_type;
-
-enum class switch_output : bool
+/**
+ * @brief log source implementation
+ */
+class log_source : public severity_channel_source_type
 {
-    on = true,
-    off = false
+public:
+    /**
+     * @brief Constructor of the log source object with default severity level and channel
+     */
+    log_source(severity severity_ = severity::trace, const std::string& channel_ = "");
+
+    void log(const std::string& message_);
+    void log(severity severity_, const std::string& message_);
+    void log(severity severity_, const std::string& channel_, const std::string& message_);
+
+    severity get_severity() const;
+    const std::string& get_channel() const;
+
+private:
+    severity _severity;
+    std::string _channel;
 };
 
 }

@@ -23,30 +23,15 @@
 
 #pragma once
 
-#include "common/typetraitdef.hpp"
+#include "common/smartptrdef.hpp"
 
 namespace ebooks
 {
 namespace logging
 {
 
-enum class severity : short
-{
-    fatal = 0,
-    error = 1,
-    warning = 2,
-    info = 3,
-    debug = 4,
-    trace = 5
-};
-
-typedef common::underlying_type<severity>::type severity_type;
-
-enum class switch_output : bool
-{
-    on = true,
-    off = false
-};
+class log_source;
+typedef common::shared_ptr<log_source> log_source_ptr;
 
 }
 }

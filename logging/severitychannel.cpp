@@ -21,32 +21,39 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#pragma once
-
-#include "common/typetraitdef.hpp"
+#include "severitychannel.hpp"
 
 namespace ebooks
 {
 namespace logging
 {
 
-enum class severity : short
-{
-    fatal = 0,
-    error = 1,
-    warning = 2,
-    info = 3,
-    debug = 4,
-    trace = 5
-};
+template<typename LevelT, typename ChannelT>
+severity_channel_source<LevelT, ChannelT>::severity_channel_source(severity severity_) :
+    base_type(boost::log::keywords::severity = translate(severity_)),
+    _severity_level(translate(severity_)),
+    _severity_max_level(get_max_global_severity())
+{ }
 
-typedef common::underlying_type<severity>::type severity_type;
+template<typename LevelT, typename ChannelT>
+severity_channel_source<LevelT, ChannelT>::severity_channel_source(severity severity_, ChannelT channel_name_) :
+    base_type((boost::log::keywords::severity = translate(severity_), boost::log::keywords::channel = channel_name_)),
+    _severity_level(translate(severity_)),
+    _severity_max_level(get_max_global_severity())
+{ }
 
-enum class switch_output : bool
+template<typename LevelT, typename ChannelT>
+boost::log::record severity_channel_source<LevelT, ChannelT>::open_record()
 {
-    on = true,
-    off = false
-};
+    if (_severity_level >= _severity_max_level)
+    {
+        return base_type::open_record();
+    }
+
+    return boost::log::record();
+}
+
+template class severity_channel_source<boost::log::trivial::severity_level, std::string>;
 
 }
 }

@@ -21,32 +21,12 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#pragma once
+#if defined(_MSC_VER) || defined (_NEEDS_PRECOMPILE)
 
-#include "common/typetraitdef.hpp"
+#include <string>
 
-namespace ebooks
-{
-namespace logging
-{
+#include <boost/log/core.hpp>
 
-enum class severity : short
-{
-    fatal = 0,
-    error = 1,
-    warning = 2,
-    info = 3,
-    debug = 4,
-    trace = 5
-};
+#include "smartptrdef.hpp"
 
-typedef common::underlying_type<severity>::type severity_type;
-
-enum class switch_output : bool
-{
-    on = true,
-    off = false
-};
-
-}
-}
+#endif

@@ -23,14 +23,15 @@
 
 #include <iostream>
 
+#include "logging/coreutil.hpp"
 #include "logging/loggingwriter.hpp"
-#include "logging/loggerdefine.hpp"
 
 #include <boost/log/sources/severity_logger.hpp>
 #include <boost/log/sources/record_ostream.hpp>
 
 int main()
 {
+    ebooks::logging::initialize();
     ebooks::logging::facility::create_console_writer("console");
     ebooks::logging::facility::set_default_severity_colors("console");
     ebooks::logging::facility::create_file_writer("file_log", "file.log");

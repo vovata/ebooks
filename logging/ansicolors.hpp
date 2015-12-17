@@ -35,8 +35,6 @@ enum class ansi_color_style : char
     normal = 0x1B
 };
 
-typedef std::underlying_type<ansi_color_style>::type ansi_color_style_type;
-
 enum class ansi_color_code : short
 {
     black   = 30,
@@ -49,8 +47,6 @@ enum class ansi_color_code : short
     white   = 37
 };
 
-typedef std::underlying_type<ansi_color_code>::type ansi_color_code_type;
-
 enum class ansi_color_effect : short
 {
     normal      = 0,
@@ -60,8 +56,6 @@ enum class ansi_color_effect : short
     underline   = 4,
     blink       = 5
 };
-
-typedef std::underlying_type<ansi_color_effect>::type ansi_color_effect_type;
 
 struct ansi_color
 {

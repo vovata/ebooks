@@ -21,49 +21,51 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "loggingwriter.hpp"
-
 #include <iomanip>
 
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/log/utility/setup/file.hpp>
 
+#include "util/enumclass.hpp"
+#include "loggingwriter.hpp"
+#include "coreutil.hpp"
+
 namespace ebooks
 {
 namespace logging
 {
-void facility::create_console_writer(const std::string& name)
+void facility::create_console_writer(const std::string& name_)
 {
-    boost::shared_ptr<console_writer> writer_ptr = boost::make_shared<console_writer>(name);
+    common::shared_ptr<console_writer> writer_ptr(new console_writer(name_));
     writer_ptr->init();
-    get_logging_core().writers.emplace(name, writer_ptr);
+    get_logging_core().writers.emplace(name_, writer_ptr);
 }
 
-void facility::create_file_writer(const std::string& name, const std::string& file_path)
+void facility::create_file_writer(const std::string& name_, const std::string& file_path_)
 {
-    boost::shared_ptr<file_writer> writer_ptr = boost::make_shared<file_writer>(name, file_path);
+    common::shared_ptr<file_writer> writer_ptr(new file_writer(name_, file_path_));
     writer_ptr->init();
-    get_logging_core().writers.emplace(name, writer_ptr);
+    get_logging_core().writers.emplace(name_, writer_ptr);
 }
 
-void facility::disable_writer(const std::string& name)
+void facility::disable_writer(const std::string& name_)
 {
-    get_logging_core().get_writer(name).disable();
+    get_logging_core().get_writer(name_).disable();
 }
 
-void facility::enable_writer(const std::string& name)
+void facility::enable_writer(const std::string& name_)
 {
-    get_logging_core().get_writer(name).enable();
+    get_logging_core().get_writer(name_).enable();
 }
 
-bool facility::writer_is_active(const std::string& name)
+bool facility::writer_is_active(const std::string& name_)
 {
-    return get_logging_core().get_writer(name).is_active();
+    return get_logging_core().get_writer(name_).is_active();
 }
 
-void facility::set_default_severity_labels(const std::string& name)
+void facility::set_default_severity_labels(const std::string& name_)
 {
-    writer& the_writer = get_logging_core().get_writer(name);
+    writer& the_writer = get_logging_core().get_writer(name_);
 
     static severity_labels_map severity_labels;
 
@@ -80,9 +82,9 @@ void facility::set_default_severity_labels(const std::string& name)
     the_writer.set_severity_labels(severity_labels);
 }
 
-void facility::set_default_severity_colors(const std::string& name)
+void facility::set_default_severity_colors(const std::string& name_)
 {
-    writer& the_writer = get_logging_core().get_writer(name);
+    writer& the_writer = get_logging_core().get_writer(name_);
 
     static severity_colors_map severity_colors;
     if (severity_colors.empty())
@@ -104,9 +106,9 @@ facility& facility::get_logging_core()
     return log_object;
 }
 
-facility::writer& facility::get_writer(const std::string& name)
+facility::writer& facility::get_writer(const std::string& name_)
 {
-    writers_map_type::iterator it_writer = get_logging_core().writers.find(name);
+    writers_map_type::iterator it_writer = get_logging_core().writers.find(name_);
     if (it_writer == get_logging_core().writers.end())
     {
         static empty_writer empty_one;
@@ -120,9 +122,9 @@ facility::writer& facility::get_writer(const std::string& name)
 facility::facility()
 { }
 
-facility::writer::writer(const std::string &name) :
+facility::writer::writer(const std::string& name_) :
     _is_active(false),
-    _name(name),
+    _name(name_),
     _switch_severity_labels(switch_output::off),
     _switch_severity_colors(switch_output::off),
     _switch_channel_label(switch_output::off),
@@ -134,108 +136,109 @@ bool facility::writer::is_active() const
     return _is_active;
 }
 
-void facility::writer::set_severity_labels(const severity_labels_map& severity_labels)
+void facility::writer::set_severity_labels(const severity_labels_map& severity_labels_)
 {
-    severity_type max_severity_value = get_max_logging_severity_value();
+    severity max_severity_value = translate(get_max_severity_value());
 
     _severity_labels.clear();
-    _severity_labels.resize(max_severity_value + 1);
-    for (const severity_labels_map::value_type& severity_label_value : severity_labels)
+    _severity_labels.resize(util::integral(max_severity_value) + 1);
+    for (const severity_labels_map::value_type& severity_label_value : severity_labels_)
     {
-        std::size_t array_index = static_cast<severity_type>(severity_label_value.first);
+        std::size_t array_index = util::integral(severity_label_value.first);
         _severity_labels[array_index] = severity_label_value.second;
     }
 
     _switch_severity_labels = switch_output::on;
 }
 
-void facility::writer::switch_severity_labels(switch_output switch_value)
+void facility::writer::switch_severity_labels(switch_output switch_value_)
 {
-    _switch_severity_labels = switch_value;
+    _switch_severity_labels = switch_value_;
 }
 
-const std::string& facility::writer::get_severity_label(severity severity) const
+const std::string& facility::writer::get_severity_label(severity severity_) const
 {
     static std::string empty_label;
 
-    severity_type severity_level = static_cast<severity_type>(severity);
+    std::size_t severity_level = util::integral(severity_);
     if (severity_level >= _severity_labels.size())
         return empty_label;
 
     return _severity_labels[severity_level];
 }
 
-const std::string& facility::writer::get_severity_color(severity severity) const
+const std::string& facility::writer::get_severity_color(severity severity_) const
 {
     static std::string empty_color;
 
-    severity_type severity_level = static_cast<severity_type>(severity);
+    std::size_t severity_level = util::integral(severity_);
     if (severity_level >= _severity_colors.size())
         return empty_color;
 
     return _severity_colors[severity_level];
 }
 
-void facility::writer::set_severity_colors(const severity_colors_map& severity_colors)
+void facility::writer::set_severity_colors(const severity_colors_map& severity_colors_)
 {
     std::stringstream normal_color_stream;
-    normal_color_stream << static_cast<color::ansi_color_style_type>(color::ansi_color_style::normal) << "[";
+    normal_color_stream << util::integral(color::ansi_color_style::normal) << "[";
 
-    severity_type max_severity_value = get_max_logging_severity_value();
+    severity_type max_severity_value = get_max_severity_value();
 
     _severity_colors.clear();
     _severity_colors.resize(max_severity_value + 1);
-    for (const severity_colors_map::value_type& severity_color_value : severity_colors)
+    for (const severity_colors_map::value_type& severity_color_value : severity_colors_)
     {
-        std::size_t array_index = static_cast<severity_type>(severity_color_value.first);
+        std::size_t array_index = util::integral(severity_color_value.first);
         const color::ansi_color& color = severity_color_value.second;
 
         std::stringstream color_stream;
         color_stream << normal_color_stream.str();
-        color_stream << std::setw(1) << static_cast<color::ansi_color_effect_type>(color.effect) << ";"
-                     << std::setw(2) << static_cast<color::ansi_color_code_type>(color.code) << ";40m";
+        color_stream << std::setw(1) << util::integral(color.effect) << ";"
+                     << std::setw(2) << util::integral(color.code) << ";40m";
         _severity_colors[array_index] = color_stream.str();
     }
 
-    normal_color_stream << std::setw(1) << static_cast<color::ansi_color_effect_type>(color::ansi_color_effect::normal) << "m";
+    normal_color_stream << std::setw(1) << util::integral(color::ansi_color_effect::normal) << "m";
     _normal_color = normal_color_stream.str();
 
     _switch_severity_colors = switch_output::on;
 }
 
-void facility::writer::switch_severity_colors(switch_output switch_value)
+void facility::writer::switch_severity_colors(switch_output switch_value_)
 {
-     _switch_severity_colors = switch_value;
+     _switch_severity_colors = switch_value_;
 }
 
-void facility::writer::switch_channel_label(switch_output switch_value)
+void facility::writer::switch_channel_label(switch_output switch_value_)
 {
-     _switch_channel_label = switch_value;
+     _switch_channel_label = switch_value_;
 }
 
-void facility::writer::switch_tag_label(switch_output switch_value)
+void facility::writer::switch_tag_label(switch_output switch_value_)
 {
-     _switch_tag_label = switch_value;
+     _switch_tag_label = switch_value_;
 }
 
-void facility::writer::function_formatter(boost::log::record_view const& rec, boost::log::formatting_ostream& strm)
+void facility::writer::function_formatter(boost::log::record_view const& rec_,
+                                          boost::log::formatting_ostream& strm_)
 {
     if (_switch_severity_labels == switch_output::on ||
         _switch_severity_colors == switch_output::on)
     {
-        severity severity_level = boost::log::extract<severity>("Severity", rec).get();
+        severity severity_level = boost::log::extract<severity>("Severity", rec_).get();
 
         if (_switch_severity_colors == switch_output::on)
-            strm << get_severity_color(severity_level);
+            strm_ << get_severity_color(severity_level);
 
         if (_switch_severity_labels == switch_output::on)
-            strm << get_severity_label(severity_level);
+            strm_ << get_severity_label(severity_level);
     }
 
-    strm << rec[boost::log::expressions::smessage];
+    strm_ << rec_[boost::log::expressions::smessage];
 
     if (_switch_severity_colors == switch_output::on)
-        strm << _normal_color;
+        strm_ << _normal_color;
 }
 
 facility::console_writer::~console_writer()

@@ -1,0 +1,18 @@
+# Logging core settings section. May be omitted if no parameters specified within it.
+# http://www.boost.org/doc/libs/1_58_0/libs/log/doc/html/log/detailed/utilities.html#log.detailed.utilities.setup
+
+[Core]
+DisableLogging=false
+Filter="%Severity% >= trace"
+
+[Sinks.DumpFile]
+Destination=TextFile
+FileName="logs/log_file_%3N.txt"
+AutoFlush=true
+RotationSize=100000000
+MaxSize=100000000
+Filter="%Severity% >= trace"
+Format="[%TimeStamp%] %Channel% (%Severity%) %Message%"
+ScanForFiles="Matching"
+Target="logs/"
+

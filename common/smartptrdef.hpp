@@ -23,30 +23,42 @@
 
 #pragma once
 
-#include "common/typetraitdef.hpp"
+#if defined(STD_NAMESPACES) || !defined(BOOST_NAMESPACES)
+#include <memory>
+#elif defined(BOOST_NAMESPACES)
+#include <boost/shared_ptr.hpp>
+#include <boost/enable_shared_from_this.hpp>
+#include <boost/make_shared.hpp>
+#include <boost/move/unique_ptr.hpp>
+#endif
 
 namespace ebooks
 {
-namespace logging
+namespace common
 {
 
-enum class severity : short
-{
-    fatal = 0,
-    error = 1,
-    warning = 2,
-    info = 3,
-    debug = 4,
-    trace = 5
-};
+#if defined(STD_NAMESPACES) || !defined(BOOST_NAMESPACES)
 
-typedef common::underlying_type<severity>::type severity_type;
+// from std namespace
+using std::shared_ptr;
+using std::weak_ptr;
+using std::unique_ptr;
 
-enum class switch_output : bool
-{
-    on = true,
-    off = false
-};
+using std::enable_shared_from_this;
+using std::make_shared;
+using std::dynamic_pointer_cast;
+
+#elif defined(BOOST_NAMESPACES)
+
+using boost::shared_ptr;
+using boost::weak_ptr;
+using boost::movelib::unique_ptr;
+
+using boost::enable_shared_from_this;
+using boost::make_shared;
+using boost::dynamic_pointer_cast;
+
+#endif
 
 }
 }
